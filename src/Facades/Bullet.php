@@ -4,6 +4,9 @@ namespace MarcoT89\Bullet\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @method static void controllers(string $namespace = null)
+ */
 class Bullet extends Facade
 {
     /**
