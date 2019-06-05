@@ -1,9 +1,8 @@
 <?php
 
-namespace MarcoT89\Bullet\Providers;
+namespace MarcoT89\Bullet;
 
 use Illuminate\Support\ServiceProvider;
-use MarcoT89\Bullet\Bullet;
 
 class BulletServiceProvider extends ServiceProvider
 {

@@ -49,7 +49,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "MarcoT89\\Bullet\\Providers\\BulletServiceProvider"
+                "MarcoT89\\Bullet\\BulletServiceProvider"
             ],
             "aliases": {
                 "Bullet": "MarcoT89\\Bullet\\Facades\\Bullet"

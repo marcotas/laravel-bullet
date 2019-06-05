@@ -4,9 +4,6 @@ namespace MarcoT89\Bullet\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see \MarcoT89\Bullet\Skeleton\SkeletonClass
- */
 class Bullet extends Facade
 {
     /**
