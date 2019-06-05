@@ -17,8 +17,20 @@ composer require marcot89/laravel-bullet
 
 ## Usage
 
+### Bullet Routes
+You can use `Bullet::controllers` in any route group.
 ``` php
-// Usage description here
+// In your routes file
+Route::middleware('auth', function () {
+    Bullet::controllers(); // defaults to App\Http\Controllers
+});
+```
+You can also specify another directory for the controllers.
+``` php
+// In your routes file
+Route::middleware('auth', function () {
+    Bullet::controllers(''); // defaults to App\Http\Controllers
+});
 ```
 
 ### Testing

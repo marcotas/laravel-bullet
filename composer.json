@@ -20,23 +20,24 @@
         "illuminate/support": "5.8.*"
     },
     "require-dev": {
+        "laravel/framework": "^5.8",
         "orchestra/testbench": "3.8.*",
         "phpunit/phpunit": "^7.0"
     },
     "autoload": {
         "psr-4": {
-            "MarcoT89\\LaravelBullet\\": "src"
+            "MarcoT89\\Bullet\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MarcoT89\\LaravelBullet\\Tests\\": "tests"
+            "MarcoT89\\Bullet\\Tests\\": "tests",
+            "App\\": "app"
         }
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-
     },
     "config": {
         "sort-packages": true
@@ -44,10 +45,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "MarcoT89\\LaravelBullet\\LaravelBulletServiceProvider"
+                "MarcoT89\\Bullet\\BulletServiceProvider"
             ],
             "aliases": {
-                "LaravelBullet": "MarcoT89\\LaravelBullet\\LaravelBulletFacade"
+                "Bullet": "MarcoT89\\Bullet\\Facades\\Bullet"
             }
         }
     }

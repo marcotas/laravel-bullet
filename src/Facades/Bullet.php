@@ -1,13 +1,13 @@
 <?php
 
-namespace MarcoT89\LaravelBullet;
+namespace MarcoT89\Bullet\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \MarcoT89\LaravelBullet\Skeleton\SkeletonClass
+ * @see \MarcoT89\Bullet\Skeleton\SkeletonClass
  */
-class LaravelBulletFacade extends Facade
+class Bullet extends Facade
 {
     /**
      * Get the registered name of the component.
