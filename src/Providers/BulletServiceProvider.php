@@ -3,6 +3,7 @@
 namespace MarcoT89\Bullet\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use MarcoT89\Bullet\Bullet;
 
 class BulletServiceProvider extends ServiceProvider
 {

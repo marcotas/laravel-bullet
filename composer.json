@@ -2,8 +2,12 @@
     "name": "marcot89/laravel-bullet",
     "description": "Bullet development for Laravel Applications",
     "keywords": [
-        "marcot89",
-        "laravel-bullet"
+        "laravel-bullet",
+        "dynamic routes",
+        "controllers",
+        "crud",
+        "routes",
+        "actions"
     ],
     "homepage": "https://github.com/marcot89/laravel-bullet",
     "license": "MIT",
@@ -16,7 +20,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.3",
         "illuminate/support": "5.8.*"
     },
     "require-dev": {
@@ -45,7 +49,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "MarcoT89\\Bullet\\BulletServiceProvider"
+                "MarcoT89\\Bullet\\Providers\\BulletServiceProvider"
             ],
             "aliases": {
                 "Bullet": "MarcoT89\\Bullet\\Facades\\Bullet"
