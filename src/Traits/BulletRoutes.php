@@ -16,7 +16,7 @@ trait BulletRoutes
     protected $httpMethods;
     protected $controllerInstances = [];
 
-    public function controllers(string $namespace = null)
+    public function namespace(string $namespace = null)
     {
         $this->namespace           = $namespace ?? '';
         $this->controllerInstances = [];
