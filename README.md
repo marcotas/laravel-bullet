@@ -65,7 +65,7 @@ namespace App\Http\Controllers\Resources; // This namespace will be useful when 
 
 use App\Http\Controllers\ResourceController;
 
-class UsersController extends ResourceController
+class UserController extends ResourceController
 {
 }
 ```
@@ -74,7 +74,7 @@ That's it! This is sufficient to add crud actions to your controller. But **what
 
 ### Dynamic Routes
 
-Now that you created a `UsersController` controller you can define a namespace in your app's controllers folder to dynamically register the routes for all of your controllers under this namespace automatically! Yes, automatically. Let's see how it works.
+Now that you created a `UserController` controller you can define a namespace in your app's controllers folder to dynamically register the routes for all of your controllers under this namespace automatically! Yes, automatically. Let's see how it works.
 
 Use `Bullet::namespace` in any group of routes you want. Example:
 
