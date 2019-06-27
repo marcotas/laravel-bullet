@@ -15,7 +15,7 @@ trait CrudHelpers
     protected $model;
     protected $policy;
     protected $modelColumns;
-    protected $modelResource;
+    protected $resource;
 
     protected function getModel()
     {
@@ -81,12 +81,12 @@ trait CrudHelpers
 
     protected function getModelResource()
     {
-        if (isset($this->modelResource)) {
-            return $this->modelResource ?: DataResource::class;
+        if (isset($this->resource)) {
+            return $this->resource ?: DataResource::class;
         }
 
-        $modelResource = class_basename($this->getModel()) . 'Resource';
-        $resourceClass = 'App\\Http\\Resources\\' . $modelResource;
+        $resource = class_basename($this->getModel()) . 'Resource';
+        $resourceClass = 'App\\Http\\Resources\\' . $resource;
 
         if (class_exists($resourceClass)) {
             return $resourceClass;
