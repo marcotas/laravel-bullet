@@ -21,7 +21,9 @@
     ],
     "require": {
         "php": "^7.3",
-        "illuminate/support": "5.8.*"
+        "illuminate/database": "^5.8",
+        "illuminate/http": "^5.8",
+        "illuminate/support": "^5.8"
     },
     "require-dev": {
         "laravel/framework": "^5.8",

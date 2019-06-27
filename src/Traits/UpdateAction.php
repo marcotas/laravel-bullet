@@ -2,6 +2,7 @@
 
 namespace MarcoT89\Bullet\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 trait UpdateAction
@@ -32,7 +33,7 @@ trait UpdateAction
         return $this->getModel()::query();
     }
 
-    protected function beforeUpdate($request, $attributes, $model)
+    protected function beforeUpdate($request, $attributes, $model): array
     {
         return $attributes;
     }

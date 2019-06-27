@@ -87,18 +87,151 @@ This will generate the following routes:
 | GET\|HEAD | users/{user}/edit | users.edit    | App\Http\Controllers\Resources\UserController@edit    | web,auth   |
 
 ### Middleware Configuration
-Comming soon...
+Because we use dynamic routes, the middleware configuration is set on a controller property. Here are some examples:
+
+```php
+// You can set only one middleware for all actions
+protected $middleware = 'auth';
+// or many middlewares
+protected $middleware = ['auth', 'verified'];
+// or customized for different actions
+protected $middleware = [
+    'auth',
+    'auth:api' => ['except' => 'index'],
+    'verified' => ['only' => ['store', 'update', 'destroy']]
+];
+```
+
 ### Policy Classes
-Comming soon...
-### Request Validations
-Comming soon...
+The policy classes are used automatically if you follow the convention. If the model of your controller is `User`, for example, laravel-bullet will try to use the `UserPolicy` policy class automatically. But if no policy is registered it just ignores the policy.
+
+If you want a customized policy class to your controller you can set the property `$policy` in your controller. Like this:
+
+```php
+class UserController extends ResourceController
+{
+    protected $policy = \App\Policies\CustomUserPolicy::class;
+}
+```
+>**NOTE:** if you set the `$policy` property and your policy class is not registered in your `AuthServiceProvider` an **exception will be thrown**.
+
+### Validations and Requests
+The validations are encouraged to be used in the request classes. The requests are automatically injected through conventions. If you have a model `User` in the controller and the current action is `store`, laravel-bullet will try to inject a request class in this following convention order:
+
+```php
+App\Http\Requests\Users\StoreRequest::class
+App\Http\Requests\UserStoreRequest::class
+```
+If none of those classes above exists, it will inject the default laravel `Illuminate\Http\Request` class.
+
+And if you want to customize the request class to a specific action, you can define it in the `requests` protected property in controller:
+
+```php
+use App\Http\Requests\MyCustomUserRequest;
+
+class UserController extends ResourceController
+{
+    protected $requests = [
+        'store' => MyCustomUserRequest::class,
+    ];
+}
+```
+Now the request `MyCustomUserRequest` class will be injected in the store action.
+
+**Old School Validations**
+
+If you don't like validations in request classes, or just prefer the laravel `validate` method, you can use in the action hooks:
+
+```php
+class UserController extends ResourceController
+{
+    protected function beforeStore($request, $attributes)
+    {
+        return $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+    }
+}
+```
+You can find more about action hooks in the next topic.
+
 ### Action Hooks
-Comming soon...
+It is very common to perform some operations in case of success or fail of an action. For example emit events, log, dispatch jobs etc. All crud actions has a `before` and a `after` hook actions. 
+
+They are very usefull, for example for encrypt passwords for users:
+
+```php
+class UserController extends ResourceController
+{
+    protected function beforeStore($request, $attributes): array
+    {
+        $attributes['password'] = bcrypt($attributes['password']);
+
+        return $attributes;
+    }
+}
+```
+
+Or to emit an event when a user is created:
+
+```php
+use App\Events\UserCreated;
+
+class UserController extends ResourceController
+{
+    protected function afterStore($request, $user)
+    {
+        event(new UserCreated($user));
+    }
+}
+```
+
+Here is a list of the declarative action hooks for each action:
+
+```php
+// Hooks for index action
+protected function beforeIndex(Request $request);
+protected function afterIndex(Request $request, Illuminate\Database\Eloquent\Builder $builder): Illuminate\Database\Eloquent\Builder;
+
+// Hooks for store action
+protected function beforeStore($request, $attributes): array; // should return the attributes for the model being stored.
+protected function afterStore($request, $model);
+
+// Hooks for update action
+protected function beforeUpdate($request, $attributes, $model): array;
+protected function afterUpdate($request, $model);
+
+// Hooks for destroy action
+protected function beforeDestroy($request, $model);
+protected function afterDestroy($request, $model);
+
+// Hooks for show action
+protected function beforeShow($request, $model);
+protected function afterShow($request, $model);
+
+// Hooks for edit action
+protected function beforeEdit($request, $model);
+protected function afterEdit($request, $model);
+
+// Hooks for forceDelete action
+protected function beforeForceDelete($request, $model);
+protected function afterForceDelete($request, $model);
+
+// Hooks for restore action
+protected function beforeRestore($request, $model);
+protected function afterRestore($request, $model);
+```
+
 ### Custom Configurations
 Comming soon...
 ### Advanced Routes
 Comming soon...
 ### Custom Action
+Comming soon...
+### Performance and Other Tips
+Public methods are used for dynamic routes, use it wiselly.
 Comming soon...
 
 ### Testing

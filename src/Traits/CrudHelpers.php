@@ -2,18 +2,18 @@
 
 namespace MarcoT89\Bullet\Traits;
 
-use MarcoT89\Bullet\Exceptions\ModelNotFoundException;
-use MarcoT89\Bullet\Resources\DataResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use MarcoT89\Bullet\Exceptions\ModelNotFoundException;
+use MarcoT89\Bullet\Resources\DataResource;
 
 trait CrudHelpers
 {
     protected $model;
-    protected $modelPolicy;
+    protected $policy;
     protected $modelColumns;
     protected $modelResource;
 
@@ -97,6 +97,10 @@ trait CrudHelpers
 
     protected function getModelPolicy()
     {
+        if ($this->policy) {
+            return $this->policy;
+        }
+        
         $model = class_basename($this->getModel());
 
         return "App\\Policies\\{$model}Policy";
@@ -112,23 +116,21 @@ trait CrudHelpers
 
     protected function resolveRequestForAction($action)
     {
-        $action            = ucfirst($action);
+        $capitalizedAction = ucfirst($action);
         $model             = class_basename($this->getModel());
         $modelPlural       = Str::plural($model);
         $requestsNamespace = 'App\\Http\\Requests';
 
-        if (isset($this->requests) && Arr::has($this->requests, strtolower($action))) {
-            $actionName = strtolower($action);
-
-            return resolve($this->requests[$actionName]);
+        if (isset($this->requests) && Arr::has($this->requests, $action)) {
+            return resolve($this->requests[$action]);
         }
 
-        if (class_exists("$requestsNamespace\\{$modelPlural}\\{$action}Request")) {
-            return resolve("$requestsNamespace\\{$modelPlural}\\{$action}Request");
+        if (class_exists("$requestsNamespace\\{$modelPlural}\\{$capitalizedAction}Request")) {
+            return resolve("$requestsNamespace\\{$modelPlural}\\{$capitalizedAction}Request");
         }
 
-        if (class_exists("$requestsNamespace\\{$model}{$action}Request")) {
-            return resolve("$requestsNamespace\\{$model}{$action}Request");
+        if (class_exists("$requestsNamespace\\{$model}{$capitalizedAction}Request")) {
+            return resolve("$requestsNamespace\\{$model}{$capitalizedAction}Request");
         }
 
         return resolve(Request::class);
@@ -139,7 +141,6 @@ trait CrudHelpers
         $ability = method_exists($this, 'resourceAbilityMap')
             ? ($this->resourceAbilityMap()[$action] ?? $action)
             : $action;
-        // dd('ability', $ability, $this->getModelPolicy());
 
         if (class_exists($this->getModelPolicy()) && method_exists($this, 'authorize')) {
             $this->authorize($ability, $modelObject ?? $this->getModel());

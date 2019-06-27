@@ -2,6 +2,7 @@
 
 namespace MarcoT89\Bullet\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 trait StoreAction
@@ -32,7 +33,7 @@ trait StoreAction
         return $this->getModel()::query();
     }
 
-    protected function beforeStore($request, $attributes)
+    protected function beforeStore($request, $attributes): array
     {
         return $attributes;
     }
