@@ -1,3 +1,5 @@
+![Laravel Bullet](https://raw.githubusercontent.com/marcoT89/laravel-bullet/master/laravel-bullet.png)
+
 # Laravel Bullet
 
 <!-- [![Latest Version on Packagist](https://img.shields.io/packagist/v/marcot89/laravel-bullet.svg?style=flat-square)](https://packagist.org/packages/marcot89/laravel-bullet) -->
