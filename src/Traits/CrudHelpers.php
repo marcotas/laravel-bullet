@@ -34,7 +34,7 @@ trait CrudHelpers
         throw new ModelNotFoundException("Model $model not found for controller $controller");
     }
 
-    protected function getQuery(): Builder
+    protected function getQuery()
     {
         return $this->getModel()::query();
     }

@@ -12,6 +12,36 @@
 
 This package gives you the power to make API Cruds to eloquent resources very fast, and you can use its dynamic routes registration based on conventions with a little of configuration.
 
+## Table of Contents
+
+- [Installation](#Installation)
+- [Basic Usage](#Basic-Usage)
+    - [Creating the Resource Controller](#Creating-the-Resource-Controller)
+    - [Extending the Resource Controller](#Extending-the-Resource-Controller)
+- [Dynamic Routes](#Dynamic-Routes)
+- [Middleware Configuration](#Middleware-Configuration)
+- [Policy Classes](#Policy-Classes)
+- [Validations and Requests](#Validations-and-Requests)
+- [Action Hooks](#Action-Hooks)
+- [API Resources (Presentation)](#API-Resources-Presentation)
+- [Actions in Details](#Actions-in-Details)
+    - [Pagination, Filters and Other Magics](#Pagination-Filters-and-Other-Magics)
+    - [Custom Query Builder for Actions](#Custom-Query-Builder-for-Actions)
+    - [Custom Actions](#Custom-Actions)
+- [Advanced Routes](#Advanced-Routes)
+    - [Custom HTTP Methods](#Custom-HTTP-Methods)
+    - [Route params and dependency injection](#Route-params-and-dependency-injection)
+- [Performance and Other Tips](#Performance-and-Other-Tips)
+    - [Only use public methods for actions](#Only-use-public-methods-for-actions)
+    - [Use `route:cache` command to increase performance](#Use-routecache-command-to-increase-performance)
+    - [HTML and JSON responses](#HTML-and-JSON-responses)
+- [Changelog](#Changelog)
+- [Contributing](#Contributing)
+- [Security](#Security)
+- [Credits](#Credits)
+- [License](#License)
+- [Laravel Package Boilerplate](#Laravel-Package-Boilerplate)
+
 ## Installation
 
 You can install the package via composer:
@@ -23,8 +53,6 @@ composer require marcot89/laravel-bullet
 > **Recommended:** This package recommends the usage of [Laravel Query Builder](https://github.com/spatie/laravel-query-builder) from [Spatie](https://github.com/spatie) team for index actions.
 
 ## Basic Usage
-
-### Basic Controller
 
 #### Creating the Resource Controller
 
@@ -74,7 +102,7 @@ class UserController extends ResourceController
 
 That's it! This is sufficient to add crud actions to your controller. But **what about define the routes dynamically?** Thats what we're going to see next.
 
-### Dynamic Routes
+## Dynamic Routes
 
 Now that you created a `UserController` controller you can define a namespace in your app's controllers folder to dynamically register the routes for all of your controllers under this namespace automatically! Yes, automatically. Let's see how it works.
 
@@ -98,7 +126,23 @@ And done! Finally this will generate the following routes:
 | GET\|HEAD | users/{user}      | users.show    | App\Http\Controllers\Resources\UserController@show    | web,auth   |
 | GET\|HEAD | users/{user}/edit | users.edit    | App\Http\Controllers\Resources\UserController@edit    | web,auth   |
 
-### Middleware Configuration
+If you want to hide some specific route or action you can use the `$only` or `$except` protected properties of the controller to do so:
+
+```php
+class UserController extends ResourceController
+{
+    protected $only = ['index', 'show'];
+    // or
+    protected $except = ['destroy'];
+}
+```
+This will generate only the expected routes as defined.
+
+>**NOTE:** keep in mind that the `$only` property has precedence over `$except` property and they cannot be used together.
+
+>**IMPORTANT:** The `$only` property will hide all other actions including the dynamic ones.
+
+## Middleware Configuration
 
 Because we use dynamic routes, the middleware configuration is set on a controller property. Here are some examples:
 
@@ -115,7 +159,7 @@ protected $middleware = [
 ];
 ```
 
-### Policy Classes
+## Policy Classes
 
 The policy classes are used automatically if you follow the convention. If the model of your controller is `User`, for example, laravel-bullet will try to use the `UserPolicy` policy class automatically. But if no policy is registered it just ignores the policy.
 
@@ -130,7 +174,7 @@ class UserController extends ResourceController
 
 > **NOTE:** if you set the `$policy` property and your policy class is not registered in your `AuthServiceProvider` an **exception will be thrown**.
 
-### Validations and Requests
+## Validations and Requests
 
 The validations are encouraged to be used in the request classes. The requests are automatically injected through conventions. If you have a model `User` in the controller and the current action is `store`, laravel-bullet will try to inject a request class in this following convention order:
 
@@ -176,7 +220,7 @@ class UserController extends ResourceController
 
 You can find more about action hooks in the next topic.
 
-### Action Hooks
+## Action Hooks
 
 It is very common to perform some operations in case of success or fail of an action. For example emit events, log, dispatch jobs etc. All crud actions has a `before` and a `after` hook actions.
 
@@ -244,7 +288,7 @@ protected function beforeRestore($request, $model);
 protected function afterRestore($request, $model);
 ```
 
-### API Resources (Presentation)
+## API Resources (Presentation)
 
 To set your own API Resource you can use the protected `resource` property in the controller class. Example:
 
@@ -259,7 +303,171 @@ class UserControlle extends ResourceController
 
 > **NOTE:** this resource will be used in all actions.
 
-### Advanced Routes
+## Actions in Details
+
+#### Pagination, Filters and Other Magics
+If you use the recommended [Laravel Query Builder](https://github.com/spatie/laravel-query-builder) composer package you should be able to use all of it's features very easy. Before dive into the examples bellow read their documentation and be familiarized with their usage.
+
+All of these properties are available for the **index** and **show** actions:
+
+```php
+protected $defaultSorts    = null;
+protected $allowedFilters  = null;
+protected $allowedIncludes = null;
+protected $allowedSorts    = null;
+protected $allowedFields   = null;
+protected $allowedAppends  = null;
+protected $defaultPerPage  = 15;
+protected $maxPerPage      = 500;
+protected $searchable      = true;
+```
+
+See how it works:
+
+**$defaultSorts**
+```php
+// Sort your records from latest to oldest by default
+protected $defaultSorts = '-created_at';
+```
+
+**$allowedFilters**
+```php
+protected $allowedFilters = ['name', 'email'];
+```
+Or you can use the `allowedFilters` method to a more complete case:
+```php
+protected function allowedFilters()
+{
+    return [
+        'name',
+        Filter::exact('id'),
+        Filter::exact('email')->ignore(null),
+        Filter::scope('with_trashed'),
+        Filter::custom('permission', FilterUserPermission::class),
+    ];
+}
+```
+
+**$allowedIncludes**
+```php
+protected $allowedIncludes = ['posts.comments'];
+```
+Or you can use the `allowedIncludes` method to a more complete case:
+```php
+protected function allowedIncludes()
+{
+    $includes = ['posts.comments'];
+
+    if (user()->isAdmin()) {
+        $includes[] = 'created_by';
+        $includes[] = 'logs';
+    }
+
+    return $includes;
+}
+```
+
+**$allowedSorts**
+```php
+protected $allowedSorts = ['id', 'name', 'created_at'];
+```
+Or you can use the `allowedSorts` method to a more complete case:
+```php
+protected function allowedSorts()
+{
+    return [
+        'id', 
+        'name', 
+        'created_at',
+        Sort::field('street', 'actual_column_street'),
+    ];
+}
+```
+
+**$allowedFields**
+```php
+protected $allowedFields = ['id', 'name', 'email'];
+```
+Or you can use the `allowedFields` method to a more complete case:
+```php
+protected function allowedFields()
+{
+    return [
+        'id', 
+        'name', 
+        'email',
+    ];
+}
+```
+
+**$allowedAppends**
+```php
+protected $allowedAppends = ['is_admin', 'is_published'];
+```
+Or you can use the `allowedAppends` method to a more complete case:
+```php
+protected function allowedAppends()
+{
+    return ['is_admin', 'is_published'];
+}
+```
+
+**$defaultPerPage**
+```php
+protected $defaultPerPage = 15; // defaults to 15
+```
+This can be passed by the `per_page` or `perPage` query params.
+
+**$maxPerPage**
+```php
+protected $maxPerPage = 500; // defaults to 500
+```
+But the `per_page` or `perPage` params cannot pass this `$maxPerPage` limit. If you pass a `per_page=1000` the pagination will limit to 300 if you have defined it. This is a protection to your queries. Use it wisely.
+
+**$searchable**
+```php
+protected $searchable = true; // defaults to true
+```
+By default all index actions accepts the `search` query param, and it will try to use a `scopeSearch` scope in the model if it's present. If it's not present it just ignores it. Set it to false if you have a search scope in your model but you don't want to make it available in your index action.
+
+#### Custom Query Builder for Actions
+There are many times that you have a big scope for your queries. For example if you are developing a multitenant application with `teams` some times you want to list the users of the current user's team. For that case you could customize the queries for the controller. For now, each of the actions has its own query method.
+
+For index action you should override the `getQuery` method, like this:
+
+```php
+protected function getQuery()
+{
+    return team()->users();
+}
+```
+Here are the complete list of actions for the query builder to override when needed:
+
+```php
+protected function getQuery($request); // for index action
+protected function getStoreQuery($request);
+protected function getUpdateQuery($request);
+protected function getDestroyQuery($request);
+protected function getShowQuery($request);
+protected function getEditQuery($request);
+protected function getForceDeleteQuery($request);
+protected function getRestoreQuery($request);
+```
+
+#### Custom Actions
+
+To completly customize a crud action you just need to declare it as it is expected. For limitation reasons all routes that need `$id` to find a model is given with `$id` param instead of the typed model object. Also it's not possible to inject request classes due to its declaration. For example, if you want to customize the update method that receives an `$id` you should do:
+
+```php
+public function update($id)
+{
+    $user = User::findOrFail($id);
+    ...
+}
+```
+
+Now you can do whatever you want with the action method.
+## Advanced Routes
 
 When using the bullet dynamic routes you don't have to write any route manually in any of the route files. With bullet routes any public method in the controller becomes an action with a registered route. Example:
 
@@ -321,21 +529,7 @@ Route::post('users/reports/{user}/{report}/{param1}/{param2}', 'Resources\UserCo
 
 > **NOTE:** Any typed param will be injected normally as expected. And request params will be injected but ignored in the route definition.
 
-### Custom Actions
-
-To completly customize a crud action you just need to declare it as it is expected. For limitation reasons all routes that need `$id` to find a model is given with `$id` param instead of the typed model object. Also it's not possible to inject request classes due to its declaration. For example, if you want to customize the update method that receives an `$id` you should do:
-
-```php
-public function update($id)
-{
-    $user = User::findOrFail($id);
-    ...
-}
-```
-
-Now you can do whatever you want with the action method.
-
-### Performance and Other Tips
+## Performance and Other Tips
 
 #### Only use public methods for actions
 
@@ -345,13 +539,16 @@ Since the public methods in the controller will register a route automatically, 
 
 Since the laravel-bullet uses a lot of reflection and IO for every controller classes, using `route:cache` command for production environments will **increase significantly the performance** of your requests.
 
+#### HTML and JSON responses
+The actions `index` responds to json if it's an AJAX request, or will try to return a view under `resources/views/users/index.blade.php`.
+
 <!-- ### Testing
 
 ```bash
 composer test
 ``` -->
 
-### Changelog
+## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
