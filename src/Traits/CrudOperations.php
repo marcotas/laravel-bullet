@@ -20,6 +20,7 @@ trait CrudOperations
     public function __construct()
     {
         $middlewares = [];
+        $this->middleware = is_string($this->middleware) ? [$this->middleware] : $this->middleware;
         foreach ($this->middleware as $middleware => $options) {
             if (!is_string($middleware)) {
                 $middleware = $options;
