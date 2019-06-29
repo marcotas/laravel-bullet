@@ -161,7 +161,7 @@ protected $middleware = [
 
 ## Policy Classes
 
-The policy classes are used automatically if you follow the convention. If the model of your controller is `User`, for example, laravel-bullet will try to use the `UserPolicy` policy class automatically. But if no policy is registered it just ignores the policy.
+The policy classes are used automatically if you follow the convention. If the model of your controller is `User`, for example, laravel-bullet will try to register a `UserPolicy` policy class automatically. But it will skip the authorization if the policy class doesn't exist.
 
 If you want a customized policy class to your controller you can set the property `$policy` in your controller. Like this:
 
@@ -171,8 +171,9 @@ class UserController extends ResourceController
     protected $policy = \App\Policies\CustomUserPolicy::class;
 }
 ```
+If you don't want a policy class to be registered even if it exists to a controller, you can just set the `$policy` property to `false`.
 
-> **NOTE:** if you set the `$policy` property and your policy class is not registered in your `AuthServiceProvider` an **exception will be thrown**.
+>**TIP:** Policy classes are registered automatically, you **don't need** to register it in the `AuthServiceProvider`.
 
 ## Validations and Requests
 

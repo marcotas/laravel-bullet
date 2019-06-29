@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use MarcoT89\Bullet\Exceptions\ModelNotFoundException;
 use MarcoT89\Bullet\Resources\DataResource;
+use Illuminate\Support\Facades\Gate;
 
 trait CrudHelpers
 {
@@ -144,6 +145,15 @@ trait CrudHelpers
 
         if (class_exists($this->getModelPolicy()) && method_exists($this, 'authorize')) {
             $this->authorize($ability, $modelObject ?? $this->getModel());
+        }
+    }
+
+    protected function registerPolicy()
+    {
+        if (class_exists($this->getModel()) &&
+            class_exists($this->getModelPolicy()) &&
+            $this->policy !== false) {
+            Gate::policy($this->getModel(), $this->getModelPolicy());
         }
     }
 }

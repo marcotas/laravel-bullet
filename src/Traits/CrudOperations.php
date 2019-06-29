@@ -28,5 +28,7 @@ trait CrudOperations
             $middlewares[] = compact('middleware', 'options');
         }
         $this->middleware = $middlewares;
+        
+        $this->registerPolicy();
     }
 }
