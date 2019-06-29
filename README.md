@@ -2,11 +2,10 @@
 
 # Laravel Bullet
 
-<!-- [![Latest Version on Packagist](https://img.shields.io/packagist/v/marcot89/laravel-bullet.svg?style=flat-square)](https://packagist.org/packages/marcot89/laravel-bullet) -->
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/marcot89/laravel-bullet.svg?style=flat-square)](https://packagist.org/packages/marcot89/laravel-bullet)
+[![Total Downloads](https://img.shields.io/packagist/dt/marcot89/laravel-bullet.svg?style=flat-square)](https://packagist.org/packages/marcot89/laravel-bullet)
 <!-- [![Build Status](https://img.shields.io/travis/marcot89/laravel-bullet/master.svg?style=flat-square)](https://travis-ci.org/marcot89/laravel-bullet) -->
 <!-- [![Quality Score](https://img.shields.io/scrutinizer/g/marcot89/laravel-bullet.svg?style=flat-square)](https://scrutinizer-ci.com/g/marcot89/laravel-bullet) -->
-
-[![Total Downloads](https://img.shields.io/packagist/dt/marcot89/laravel-bullet.svg?style=flat-square)](https://packagist.org/packages/marcot89/laravel-bullet)
 
 ⚡️ Lightning fast CRUDs and routes registrations for Laravel Applications
 
