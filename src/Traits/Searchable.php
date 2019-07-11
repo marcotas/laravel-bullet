@@ -18,10 +18,13 @@ trait Searchable
         }
 
         $firstField = $fields->shift();
-        $query->where($firstField, 'ilike', "%$search%");
+        $driver = optional($this->getConnection())->getDriverName() ?? 'mysql';
+        $like = $driver === 'pgsql' ? 'ilike' : 'like';
+
+        $query->where($firstField, $like, '%' . strtolower($search) . '%');
 
         foreach ($fields as $field) {
-            $query->orWhere($field, 'ilike', "%$search%");
+            $query->orWhere($field, $like, '%' . strtolower($search) . '%');
         }
 
         return $query;
