@@ -9,14 +9,12 @@
 
 ⚡️ Lightning fast CRUDs and routes registrations for Laravel Applications
 
-This package gives you the power to make API Cruds to eloquent resources very fast, and you can use its dynamic routes registration based on conventions with a little of configuration.
+This package gives you the power to make API Cruds to eloquent resources very fast, and you can use its dynamic routes registration based on conventions. If you don't like scaffolds, and don't like the repetitive crud operations and route registration for resources, this is the right package for you and your applications.
 
 ## Table of Contents
 
 - [Installation](#Installation)
 - [Basic Usage](#Basic-Usage)
-    - [Creating the Resource Controller](#Creating-the-Resource-Controller)
-    - [Extending the Resource Controller](#Extending-the-Resource-Controller)
 - [Dynamic Routes](#Dynamic-Routes)
 - [Middleware Configuration](#Middleware-Configuration)
 - [Policy Classes](#Policy-Classes)
@@ -53,24 +51,21 @@ composer require marcot89/laravel-bullet
 
 ## Basic Usage
 
-#### Creating the Resource Controller
-
-Create a `ResourceController` and simply add the trait `CrudOperations` to it:
+Simply extend the `ResourceController` in your controller class:
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use MarcoT89\Bullet\Traits\CrudOperations;
+use MarcoT89\Bullet\Controllers\ResourceController;
 
-class ResourceController extends Controller
+class UserController extends ResourceController
 {
-    use CrudOperations;
 }
 ```
 
-Now you have all of these actions in controller class:
+Done! Now you have all of these crud actions for the model `User` in your controller class:
 
 -   index
 -   store
@@ -83,38 +78,25 @@ Now you have all of these actions in controller class:
 
 > **Important:** The methods `forceDelete` and `restore` is only displayed if the resource method use the laravel's trait `SoftDeletes`.
 
-#### Extending the Resource Controller
-
-Now that you have a `ResourceController` class you can extend from it. Lets say that you want a complete crud operations for the model `User`. After creating your migrations and defined your `User` model you can create the controller like this:
-
-```php
-<?php
-
-namespace App\Http\Controllers\Resources; // This namespace will be useful when we talk about the dynamic routes registrations, but it can really be any namespace you want.
-
-use App\Http\Controllers\ResourceController;
-
-class UserController extends ResourceController
-{
-}
-```
+> **Convention:** The resource model is infered by the convention. If you have a controller called `PostController` it will infer the model `Post`. The convention for the controller name is something like: `[Model]Controller` and it **will not** try to resolve from plural to singular. So if you define a controller `PostsController` it will try to resolve the model `Posts` instead of `Post`. Keep this in mind when creating your controllers.
 
 That's it! This is sufficient to add crud actions to your controller. But **what about define the routes dynamically?** Thats what we're going to see next.
 
 ## Dynamic Routes
 
-Now that you created a `UserController` controller you can define a namespace in your app's controllers folder to dynamically register the routes for all of your controllers under this namespace automatically! Yes, automatically. Let's see how it works.
+Now that you created a `UserController` it is time to register the routes for the resource controller right?
+But what if those routes could be registered automatically? Ok! Lets do it!
 
 Use `Bullet::namespace` in any group of routes you want. Example:
 
 ```php
 // routes/web.php
 Route::middleware('auth', function () {
-    Bullet::namespace('Resources'); // the base namespace is App\Http\Controllers
+    Bullet::namespace('Resources'); // the default namespace is App\Http\Controllers
 });
 ```
 
-And done! Finally this will generate the following routes:
+And that's it! Now **all** controllers created under `Resources` namespace will have their public methods registered automatically. This are the following routes:
 
 | HTTP      | URL               | Route Name    | Controller@action                                     | Middleware |
 | --------- | ----------------- | ------------- | ----------------------------------------------------- | ---------- |
@@ -376,8 +358,8 @@ Or you can use the `allowedSorts` method to a more complete case:
 protected function allowedSorts()
 {
     return [
-        'id', 
-        'name', 
+        'id',
+        'name',
         'created_at',
         Sort::field('street', 'actual_column_street'),
     ];
@@ -393,8 +375,8 @@ Or you can use the `allowedFields` method to a more complete case:
 protected function allowedFields()
 {
     return [
-        'id', 
-        'name', 
+        'id',
+        'name',
         'email',
     ];
 }

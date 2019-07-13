@@ -5,10 +5,12 @@ namespace MarcoT89\Bullet\Traits;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use MarcoT89\Bullet\Controllers\BaseController;
 
 trait BulletRoutes
 {
     protected $ignoreClasses = [
+        BaseController::class,
         \Illuminate\Routing\Controller::class,
         'App\\Http\\Controllers\\Controller',
     ];
