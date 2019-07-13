@@ -80,7 +80,7 @@ trait BulletRoutes
                 $httpMethod = $this->inferHttpMethodFromActionName($action);
                 $model      = class_basename($this->getModelFromController($controllerName));
                 $url        = $this->getRouteOf($controllerName, $model, $action);
-                $route      = Str::plural(Str::kebab($model));
+                $route      = $this->getRouteNameFrom($controllerName);
                 $routeName  = Str::kebab($action);
 
                 if (!$this->shouldDisplayRoute($controllerName, $action)) {
@@ -122,9 +122,9 @@ trait BulletRoutes
 
     private function getRouteOf(string $controller, string $model, string $action)
     {
+        $defaultRoute          = $this->getRouteNameFrom($controller);
         $modelSlug             = Str::kebab($model);
         $modelInVariableFormat = Str::camel($modelSlug);
-        $defaultRoute          = Str::plural($modelSlug);
         $methodSlug            = Str::kebab($this->sanitizeMethodName($action));
         $urlParams             = $this->getMethodParametersOf($controller, $action)
             ->map(function (\ReflectionParameter $param) {
@@ -149,6 +149,14 @@ trait BulletRoutes
             default:
                 return "$defaultRoute/$methodSlug/$urlParams";
         }
+    }
+
+    private function getRouteNameFrom(string $controller)
+    {
+        $names = explode('_', Str::snake($controller));
+        array_pop($names);
+
+        return Str::plural(implode('-', $names));
     }
 
     private function getMethodParametersOf(string $controller, string $method): Collection
