@@ -129,7 +129,7 @@ trait BulletRoutes
         $urlParams             = $this->getMethodParametersOf($controller, $action)
             ->map(function (\ReflectionParameter $param) {
                 return '{' . $param->getName() . '}';
-            })->join('/');
+            })->implode('/');
 
         switch ($action) {
             case 'index':
