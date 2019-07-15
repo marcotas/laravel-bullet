@@ -241,15 +241,12 @@ trait BulletRoutes
 
     private function getModelFromController(string $controller)
     {
-        $controllerInstance = $this->getControllerInstance($controller);
-        $reflection         = new \ReflectionObject($controllerInstance);
-        $modelProperty      = $reflection->getProperty('model');
-        $modelProperty->setAccessible(true);
+        $model = $this->getControllerPropValue($controller, 'model');
 
         // Infer model name from controller
         list($controller) = explode('-', Str::kebab($controller));
 
-        return $modelProperty->getValue($controllerInstance) ?? 'App\\Models\\' . Str::studly($controller);
+        return $model ?? 'App\\Models\\' . Str::studly($controller);
     }
 
     private function getControllerInstance($controller)
@@ -266,14 +263,21 @@ trait BulletRoutes
         $controller      = class_basename($controller);
         $controllerClass = $this->getNamespaced($controller);
 
-        return resolve($controllerClass);
+        $controllerObject = resolve($controllerClass);
+
+        return is_string($controllerObject) ? new $controllerObject : $controllerObject;
     }
 
     private function getControllerPropValue($controller, $property)
     {
         $object     = $this->getControllerInstance($controller);
         $reflection = new \ReflectionObject($object);
-        $prop       = $reflection->getProperty($property);
+
+        if (!$reflection->hasProperty($property)) {
+            return null;
+        }
+
+        $prop = $reflection->getProperty($property);
         $prop->setAccessible(true);
 
         return $prop->getValue($object);
