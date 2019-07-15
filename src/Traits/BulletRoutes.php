@@ -266,14 +266,21 @@ trait BulletRoutes
         $controller      = class_basename($controller);
         $controllerClass = $this->getNamespaced($controller);
 
-        return resolve($controllerClass);
+        $controllerObject = resolve($controllerClass);
+
+        return is_string($controllerObject) ? new $controllerObject : $controllerObject;
     }
 
     private function getControllerPropValue($controller, $property)
     {
         $object     = $this->getControllerInstance($controller);
         $reflection = new \ReflectionObject($object);
-        $prop       = $reflection->getProperty($property);
+
+        if (!$reflection->hasProperty($property)) {
+            return null;
+        }
+
+        $prop = $reflection->getProperty($property);
         $prop->setAccessible(true);
 
         return $prop->getValue($object);
