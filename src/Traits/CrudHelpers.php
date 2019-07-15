@@ -2,14 +2,12 @@
 
 namespace MarcoT89\Bullet\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use MarcoT89\Bullet\Exceptions\ModelNotFoundException;
 use MarcoT89\Bullet\Resources\DataResource;
-use Illuminate\Support\Facades\Gate;
 
 trait CrudHelpers
 {
@@ -86,7 +84,7 @@ trait CrudHelpers
             return $this->resource ?: DataResource::class;
         }
 
-        $resource = class_basename($this->getModel()) . 'Resource';
+        $resource      = class_basename($this->getModel()) . 'Resource';
         $resourceClass = 'App\\Http\\Resources\\' . $resource;
 
         if (class_exists($resourceClass)) {
@@ -101,7 +99,7 @@ trait CrudHelpers
         if ($this->policy) {
             return $this->policy;
         }
-        
+
         $model = class_basename($this->getModel());
 
         return "App\\Policies\\{$model}Policy";
@@ -145,15 +143,6 @@ trait CrudHelpers
 
         if (class_exists($this->getModelPolicy()) && method_exists($this, 'authorize')) {
             $this->authorize($ability, $modelObject ?? $this->getModel());
-        }
-    }
-
-    protected function registerPolicy()
-    {
-        if (class_exists($this->getModel()) &&
-            class_exists($this->getModelPolicy()) &&
-            $this->policy !== false) {
-            Gate::policy($this->getModel(), $this->getModelPolicy());
         }
     }
 }
