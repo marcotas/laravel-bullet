@@ -11,11 +11,6 @@ use MarcoT89\Bullet\Resources\DataResource;
 
 trait CrudHelpers
 {
-    protected $model;
-    protected $policy;
-    protected $modelColumns;
-    protected $resource;
-
     protected function getModel()
     {
         $controller = class_basename(get_called_class());
@@ -96,7 +91,7 @@ trait CrudHelpers
 
     protected function getModelPolicy()
     {
-        if ($this->policy) {
+        if (isset($this->policy) && $this->policy) {
             return $this->policy;
         }
 

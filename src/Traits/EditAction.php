@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 trait EditAction
 {
-    use CrudHelpers;
-
     public function edit($id)
     {
         $request = $this->resolveRequestForAction('edit');

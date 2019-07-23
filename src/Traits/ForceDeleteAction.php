@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 trait ForceDeleteAction
 {
-    use CrudHelpers;
-
     public function forceDelete($id)
     {
         $request = $this->resolveRequestForAction('forceDelete');

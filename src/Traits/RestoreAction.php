@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 trait RestoreAction
 {
-    use CrudHelpers;
-
     public function restore($id)
     {
         $request = $this->resolveRequestForAction('restore');

@@ -2,13 +2,10 @@
 
 namespace MarcoT89\Bullet\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 trait StoreAction
 {
-    use CrudHelpers;
-
     public function store()
     {
         $request = $this->resolveRequestForAction('store');

@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 trait ShowAction
 {
-    use CrudHelpers;
-
     public function show($id)
     {
         $request = $this->resolveRequestForAction('show');

@@ -2,15 +2,17 @@
 
 namespace MarcoT89\Bullet\Traits;
 
+use Illuminate\Support\Facades\Gate;
+
 trait BulletPolicies
 {
-    use CrudHelpers;
-
     protected function registerPolicy()
     {
+        $policy = $this->policy ?? null;
+
         if (class_exists($this->getModel()) &&
             class_exists($this->getModelPolicy()) &&
-            $this->policy !== false) {
+            $policy !== false) {
             Gate::policy($this->getModel(), $this->getModelPolicy());
         }
     }

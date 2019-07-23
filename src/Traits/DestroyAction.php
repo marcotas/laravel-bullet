@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 trait DestroyAction
 {
-    use CrudHelpers;
-
     public function destroy($id)
     {
         $request = $this->resolveRequestForAction('destroy');

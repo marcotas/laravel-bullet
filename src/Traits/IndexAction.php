@@ -7,18 +7,6 @@ use Illuminate\Http\Request;
 
 trait IndexAction
 {
-    use CrudHelpers;
-
-    protected $defaultSorts    = null;
-    protected $allowedFilters  = null;
-    protected $allowedIncludes = null;
-    protected $allowedSorts    = null;
-    protected $allowedFields   = null;
-    protected $allowedAppends  = null;
-    protected $defaultPerPage  = 15;
-    protected $maxPerPage      = 500;
-    protected $searchable      = true;
-
     public function index(Request $request)
     {
         $this->beforeIndex($request);
