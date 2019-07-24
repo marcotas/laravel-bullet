@@ -2,7 +2,6 @@
 
 namespace MarcoT89\Bullet\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 trait IndexAction
@@ -30,16 +29,16 @@ trait IndexAction
         ]);
     }
 
-    protected function beforeIndex(Request $request)
+    protected function beforeIndex($request)
     {
     }
 
-    protected function afterIndex(Request $request, Builder $query): Builder
+    protected function afterIndex($request, $builder)
     {
-        return $query;
+        return $builder;
     }
 
-    protected function getIndexQuery($request): Builder
+    protected function getIndexQuery($request)
     {
         $query = $this->getFilteredQuery($request);
 

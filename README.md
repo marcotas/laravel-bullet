@@ -238,8 +238,8 @@ Here is a list of the declarative action hooks for each action:
 
 ```php
 // Hooks for index action
-protected function beforeIndex(Request $request);
-protected function afterIndex(Request $request, Illuminate\Database\Eloquent\Builder $builder): Illuminate\Database\Eloquent\Builder;
+protected function beforeIndex($request);
+protected function afterIndex($request, $builder);
 
 // Hooks for store action
 protected function beforeStore($request, $attributes): array; // should return the attributes for the model being stored.
