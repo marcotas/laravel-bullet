@@ -91,7 +91,7 @@ trait CrudHelpers
 
     protected function getModelPolicy()
     {
-        if (isset($this->policy) && $this->policy) {
+        if (isset($this->policy)) {
             return $this->policy;
         }
 
