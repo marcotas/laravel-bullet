@@ -81,7 +81,7 @@ trait BulletRoutes
                 $model      = class_basename($this->getModelFromController($controllerName));
                 $url        = $this->getRouteOf($controllerName, $model, $action);
                 $route      = $this->getRouteNameFrom($controllerName);
-                $routeName  = Str::kebab($action);
+                $routeName  = Str::kebab($this->sanitizeMethodName($action));
 
                 if (!$this->shouldDisplayRoute($controllerName, $action)) {
                     continue;
@@ -178,11 +178,11 @@ trait BulletRoutes
     {
         $sanitized = $method;
 
-        foreach ($this->httpMethods() as $httpMethod) {
-            if (substr($sanitized, 0, strlen($httpMethod)) == $httpMethod) {
-                $sanitized = Str::camel(substr($sanitized, strlen($httpMethod)));
+        $this->httpMethods()->each(function ($httpMethod) use (&$sanitized) {
+            if (Str::startsWith($sanitized, $httpMethod) && (strlen($sanitized) !== strlen($httpMethod))) {
+                $sanitized = substr($sanitized, strlen($httpMethod));
             }
-        }
+        });
 
         return $sanitized;
     }

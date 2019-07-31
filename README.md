@@ -483,8 +483,9 @@ public function postReports()
 Now, the public method `postReports` will register a route with post http method:
 
 ```php
-Route::post('users/reports', 'Resources\UserController@postReports')->name('users.post-reports');
+Route::post('users/reports', 'Resources\UserController@postReports')->name('users.reports');
 ```
+> **HINT:** Note that the generated **route name** was `'users.reports'` instead of `'users.post-reports'`.
 
 #### Route params and dependency injection
 
