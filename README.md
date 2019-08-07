@@ -304,6 +304,8 @@ protected $maxPerPage      = 500;
 protected $searchable      = true;
 ```
 
+> **WARNING:** This set of properties only works with [Laravel Query Builder](https://github.com/spatie/laravel-query-builder) package. It **WILL NOT WORK** without it.
+
 See how it works:
 
 **$defaultSorts**
@@ -511,6 +513,15 @@ Route::post('users/reports/{user}/{report}/{param1}/{param2}', 'Resources\UserCo
 ```
 
 > **NOTE:** Any typed param will be injected normally as expected. And request params will be injected but ignored in the route definition.
+
+#### Excluding Controller From Dynamic Routes
+
+Sometimes you have to define a very custom routes for one of your controllers. To exclude your controller from the dynamic routes you should use the `options` parameters on `namespace` method. Like this:
+
+```php
+Bullet::namespace('Api/V1', ['except' => 'InternalController']);
+```
+Now the routes for this controller won't be generated dynamically. You have to register its routes **manually**.
 
 ## Performance and Other Tips
 
