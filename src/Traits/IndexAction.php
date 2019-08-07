@@ -2,12 +2,12 @@
 
 namespace MarcoT89\Bullet\Traits;
 
-use Illuminate\Http\Request;
-
 trait IndexAction
 {
-    public function index(Request $request)
+    public function index()
     {
+        $request = $this->resolveRequestForAction('index');
+        $this->authorizeAction('index');
         $this->beforeIndex($request);
 
         $perPage = $request->per_page ?? $request->perPage ?? $this->defaultPerPage;

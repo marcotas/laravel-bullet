@@ -18,10 +18,16 @@ trait BulletRoutes
     protected $httpMethods;
     protected $controllerInstances = [];
 
-    public function namespace(string $namespace = null)
+    public function namespace(string $namespace = null, array $options = [])
     {
         $this->namespace           = $namespace ?? '';
         $this->controllerInstances = [];
+
+        if (isset($options['except'])) {
+            collect($options['except'])->each(function ($controller) {
+                $this->ignoreClasses[] = $this->getNamespaced($controller);
+            });
+        }
 
         $controllers = $this->mapMethods($this->getControllers());
 
@@ -63,6 +69,8 @@ trait BulletRoutes
         return $controllers->mapWithKeys(function ($controller) {
             $class = new \ReflectionClass($this->getNamespaced($controller));
             $methods = collect($class->getMethods())->filter(function ($method) {
+                dump($method->class);
+
                 return $method->isPublic()
                     && !Str::startsWith($method->name, '__')
                     && !collect($this->ignoreClasses)->contains($method->class);
