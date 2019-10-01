@@ -324,10 +324,10 @@ protected function allowedFilters()
 {
     return [
         'name',
-        Filter::exact('id'),
-        Filter::exact('email')->ignore(null),
-        Filter::scope('with_trashed'),
-        Filter::custom('permission', FilterUserPermission::class),
+        AllowedFilter::exact('id'),
+        AllowedFilter::exact('email')->ignore(null),
+        AllowedFilter::scope('with_trashed'),
+        AllowedFilter::custom('permission', FilterUserPermission::class),
     ];
 }
 ```
