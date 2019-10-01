@@ -41,9 +41,9 @@ trait CrudHelpers
             $query = \Spatie\QueryBuilder\QueryBuilder::for($query)
                 ->defaultSorts($this->defaultSorts())
                 ->allowedFilters($this->allowedFilters())
+                ->allowedFields($this->allowedFields())
                 ->allowedIncludes($this->allowedIncludes())
                 ->allowedSorts($this->allowedSorts())
-                ->allowedFields($this->allowedFields())
                 ->allowedAppends($this->allowedAppends());
         }
 
